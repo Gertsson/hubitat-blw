@@ -54,7 +54,7 @@ preferences {
 	input name: "infoLogging", type: "bool", title: "Enable logging", defaultValue: true
 	input name: "debugLogging", type: "bool", title: "Enable debug logging", defaultValue: false
 	input name: "traceLogging", type: "bool", title: "Enable trace logging", defaultValue: false
-	input name: "tempDecimals", type: "enum", title: "Temperature decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
+	input name: "temperatureDecimals", type: "enum", title: "Temperature decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
 	input name: "humidityDecimals", type: "enum", title: "Humidity decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
 	
 }
@@ -73,7 +73,7 @@ void configureSpecifics() {
 	updateDataValue("encoding", "Xiaomi")
 	device.name = "Xiaomi Aqara Temperature and Humidity Sensor WSDCGQ01LM"
 	sendEvent(name: "numberOfButtons", value: 1, isStateChange: false)
-	if (tempDecimals == null) device.updateSetting("tempDecimals", [value: "2", type: "enum"])
+	if (temperatureDecimals == null) device.updateSetting("temperatureDecimals", [value: "2", type: "enum"])
 	if (humidityDecimals == null) device.updateSetting("humidityDecimals", [value: "2", type: "enum"])
     
 }
@@ -114,7 +114,7 @@ void processMap(Map map) {
 
 		} else {
 
-			roundedTemperature = temperature.setScale((tempDecimals != null ? tempDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			roundedTemperature = temperature.setScale((temperatureDecimals != null ? temperatureDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 			logging("${device} : Temperature : ${roundedTemperature} °${temperatureScale}", "info")
 			sendEvent(name: "temperature", value: roundedTemperature, unit: "${temperatureScale}")
 
