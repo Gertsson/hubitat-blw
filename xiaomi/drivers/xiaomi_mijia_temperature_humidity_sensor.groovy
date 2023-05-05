@@ -20,7 +20,7 @@ import groovy.transform.Field
 
 metadata {
 
-	definition (name: "Xiaomi Mijia Temperature and Humidity Sensor", namespace: "BirdsLikeWires", author: "Originally Andrew Davison", importUrl: "https://github.com/Gertsson/hubitat-blw/blob/master/xiaomi/drivers/xiaomi_mijia_temperature_humidity_sensor.groovy") {
+	definition (name: "Xiaomi Mijia Temperature and Humidity Sensor", namespace: "BirdsLikeWires", author: "Originally Andrew Davison", importUrl: "https://raw.githubusercontent.com/Gertsson/hubitat-blw/master/xiaomi/drivers/xiaomi_mijia_temperature_humidity_sensor.groovy") {
 
 		capability "Battery"
 		capability "Configuration"
