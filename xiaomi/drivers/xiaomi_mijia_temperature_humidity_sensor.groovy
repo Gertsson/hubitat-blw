@@ -1,11 +1,12 @@
 /*
  * 
  *  Xiaomi Mijia Temperature and Humidity Sensor Driver for WSDCGQ01LM
- *	
+ *	Copied from BirdsLikeWires driver for the Xiaomi Aqara Temperature and Humidity Sensor Driver for WSDCGQ11LM
+  *	
  */
 
 
-@Field String driverVersion = "v1.14 (5th May 2023)"
+@Field String driverVersion = "v1.00 (5th May 2023)"
 
 
 #include BirdsLikeWires.library
@@ -19,7 +20,7 @@ import groovy.transform.Field
 
 metadata {
 
-	definition (name: "Xiaomi Mijia Temperature and Humidity Sensor", namespace: "BirdsLikeWires", author: "Andrew Davison", importUrl: "https://raw.githubusercontent.com/birdslikewires/hubitat/master/xiaomi/drivers/xiaomi_aqara_temperature_humidity_sensor.groovy") {
+	definition (name: "Xiaomi Mijia Temperature and Humidity Sensor", namespace: "BirdsLikeWires", author: "Andrew Davison", importUrl: "https://github.com/Gertsson/hubitat-blw/blob/master/xiaomi/drivers/xiaomi_mijia_temperature_humidity_sensor.groovy") {
 
 		capability "Battery"
 		capability "Configuration"
@@ -118,32 +119,6 @@ void processMap(Map map) {
 			sendEvent(name: "temperature", value: temperature, unit: "${temperatureScale}")
 
 		}
-
-	} else if (map.cluster == "0403") { 
-
-		// Received pressure data.
-
-		String[] pressureHex = receivedValue[2..3] + receivedValue[0..1]
-		String pressureFlippedHex = pressureHex.join()
-		BigDecimal pressure = hexStrToSignedInt(pressureFlippedHex)
-		pressure = pressure.setScale(1, BigDecimal.ROUND_HALF_UP) / 10
-
-		BigDecimal lastPressure = device.currentState("pressure") ? device.currentState("pressure").value.toBigDecimal() : 0
-
-		////////// WORK TO DO - RECORD PREVIOUS PRESSURE AS LASTPRESSURE IF PRESSURE HAS CHANGED OR SOMETHING - TOO TIRED!
-
-		// BigDecimal pressurePrevious = device.currentState("pressurePrevious").value.toBigDecimal()
-		// if (pressurePrevious != null && pressure != lastPressure) {
-		// 	endEvent(name: "pressurePrevious", value: lastPressure, unit: "kPa")
-		// } else if 
-
-		String pressureDirection = pressure > lastPressure ? "rising" : "falling"
-
-		logging("${device} : pressure : ${pressure} from hex value ${pressureFlippedHex} flipped from ${map.value}", "trace")
-		logging("${device} : Pressure : ${pressure} kPa", "info")
-		sendEvent(name: "pressure", value: pressure, unit: "kPa")
-		sendEvent(name: "pressureDirection", value: "${pressureDirection}")
-
 	} else if (map.cluster == "0405") { 
 
 		// Received humidity data.
