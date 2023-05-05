@@ -1,8 +1,8 @@
 /*
  * 
  *  Xiaomi Mijia Temperature and Humidity Sensor Driver for WSDCGQ01LM
- *	Copied from BirdsLikeWires driver for the Xiaomi Aqara Temperature and Humidity Sensor Driver for WSDCGQ11LM
-  *	
+ *  Copied from BirdsLikeWires driver for the Xiaomi Aqara Temperature and Humidity Sensor Driver for WSDCGQ11LM
+ *	
  */
 
 
@@ -41,7 +41,7 @@ metadata {
 			command "testCommand"
 		}
 
-        fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sens", deviceJoinName: "WSDCGQ01LM", endpointId: "02"
+		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sens", deviceJoinName: "WSDCGQ01LM", endpointId: "02"
 		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sensor_ht", deviceJoinName: "WSDCGQ01LM", endpointId: "02"
 
 	}
@@ -73,8 +73,8 @@ void configureSpecifics() {
 	updateDataValue("encoding", "Xiaomi")
 	device.name = "Xiaomi Aqara Temperature and Humidity Sensor WSDCGQ01LM"
 	sendEvent(name: "numberOfButtons", value: 1, isStateChange: false)
-    if (tempDecimals == null) device.updateSetting("tempDecimals", [value: "2", type: "enum"])
-    if (humidityDecimals == null) device.updateSetting("humidityDecimals", [value: "2", type: "enum"])
+	if (tempDecimals == null) device.updateSetting("tempDecimals", [value: "2", type: "enum"])
+	if (humidityDecimals == null) device.updateSetting("humidityDecimals", [value: "2", type: "enum"])
     
 }
 
@@ -100,7 +100,7 @@ void processMap(Map map) {
 		String[] temperatureHex = receivedValue[2..3] + receivedValue[0..1]
 		String temperatureFlippedHex = temperatureHex.join()
 		BigDecimal temperature = hexStrToSignedInt(temperatureFlippedHex) / 100
-    	temperature = temperature.setScale((tempDecimals != null ? tempDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+		temperature = temperature.setScale((tempDecimals != null ? tempDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 
 		logging("${device} : temperature : ${temperature} from hex value ${temperatureFlippedHex} flipped from ${map.value}", "trace")
 
@@ -126,9 +126,9 @@ void processMap(Map map) {
 		String[] humidityHex = receivedValue[2..3] + receivedValue[0..1]
 		String humidityFlippedHex = humidityHex.join()
 		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex) /100
-		humidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+		roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 
-        logging("${device} : humidity : ${humidity} from hex value ${humidityFlippedHex} flipped from ${map.value}", "trace")
+		logging("${device} : humidity : ${humidity} from hex value ${humidityFlippedHex} flipped from ${map.value}", "trace")
 
 		BigDecimal lastTemperature = device.currentState("temperature") ? device.currentState("temperature").value.toBigDecimal() : 0
 
@@ -140,9 +140,9 @@ void processMap(Map map) {
 		BigDecimal numerator = (6.112 * Math.exp((17.67 * lastTemperature) / (lastTemperature + 243.5)) * humidity * 2.1674)
 		BigDecimal denominator = lastTemperature + 273.15
 		BigDecimal absoluteHumidity = numerator / denominator
-        absoluteHumidity = absoluteHumidity.setScale(1, BigDecimal.ROUND_HALF_UP)
+		absoluteHumidity = absoluteHumidity.setScale(1, BigDecimal.ROUND_HALF_UP)
 
-        String cubedChar = String.valueOf((char)(179))
+		String cubedChar = String.valueOf((char)(179))
 
 		if (humidity > 100 || humidity < 0) {
 
@@ -152,7 +152,7 @@ void processMap(Map map) {
 
 			logging("${device} : Humidity (Relative) : ${humidity} %", "info")
 			logging("${device} : Humidity (Absolute) : ${absoluteHumidity} g/m${cubedChar}", "info")
-			sendEvent(name: "humidity", value: humidity, unit: "%")
+			sendEvent(name: "humidity", value: roundedHumidity, unit: "%")
 			sendEvent(name: "absoluteHumidity", value: absoluteHumidity, unit: "g/m${cubedChar}")
 
 		}
