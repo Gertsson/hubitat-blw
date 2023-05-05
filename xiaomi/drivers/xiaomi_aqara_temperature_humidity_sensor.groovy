@@ -52,7 +52,10 @@ preferences {
 	input name: "infoLogging", type: "bool", title: "Enable logging", defaultValue: true
 	input name: "debugLogging", type: "bool", title: "Enable debug logging", defaultValue: false
 	input name: "traceLogging", type: "bool", title: "Enable trace logging", defaultValue: false
-	
+	input name: "temperatureDecimals", type: "enum", title: "Temperature decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
+	input name: "humidityDecimals", type: "enum", title: "Humidity decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
+	input name: "pressureDecimals", type: "enum", title: "Pressure decimals", defaultValue: 1, required: true, options: [[0:"None"],[1:"1 (Default)"]]
+
 }
 
 
@@ -69,6 +72,9 @@ void configureSpecifics() {
 	updateDataValue("encoding", "Xiaomi")
 	device.name = "Xiaomi Aqara Temperature and Humidity Sensor WSDCGQ11LM"
 	sendEvent(name: "numberOfButtons", value: 1, isStateChange: false)
+	if (temperatureDecimals == null) device.updateSetting("temperatureDecimals", [value: "2", type: "enum"])
+	if (humidityDecimals == null) device.updateSetting("humidityDecimals", [value: "2", type: "enum"])
+	if (pressureDecimals == null) device.updateSetting("pressureDecimals", [value: "1", type: "enum"])
 
 }
 
@@ -93,9 +99,8 @@ void processMap(Map map) {
 
 		String[] temperatureHex = receivedValue[2..3] + receivedValue[0..1]
 		String temperatureFlippedHex = temperatureHex.join()
-		BigDecimal temperature = hexStrToSignedInt(temperatureFlippedHex)
-		temperature = temperature.setScale(2, BigDecimal.ROUND_HALF_UP) / 100
-
+		BigDecimal temperature = hexStrToSignedInt(temperatureFlippedHex) / 100
+	
 		logging("${device} : temperature : ${temperature} from hex value ${temperatureFlippedHex} flipped from ${map.value}", "trace")
 
 		String temperatureScale = location.temperatureScale
@@ -109,8 +114,9 @@ void processMap(Map map) {
 
 		} else {
 
-			logging("${device} : Temperature : ${temperature} °${temperatureScale}", "info")
-			sendEvent(name: "temperature", value: temperature, unit: "${temperatureScale}")
+			BigDecimal roundedTemperature = temperature.setScale((temperatureDecimals != null ? temperatureDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			logging("${device} : Temperature : ${roundedTemperature} °${temperatureScale}", "info")
+			sendEvent(name: "temperature", value: roundedTemperature, unit: "${temperatureScale}")
 
 		}
 
@@ -120,8 +126,9 @@ void processMap(Map map) {
 
 		String[] pressureHex = receivedValue[2..3] + receivedValue[0..1]
 		String pressureFlippedHex = pressureHex.join()
-		BigDecimal pressure = hexStrToSignedInt(pressureFlippedHex)
-		pressure = pressure.setScale(1, BigDecimal.ROUND_HALF_UP) / 10
+		BigDecimal pressure = hexStrToSignedInt(pressureFlippedHex) / 10
+		
+		logging("${device} : pressure : ${pressure} from hex value ${pressureFlippedHex} flipped from ${map.value}", "trace")
 
 		BigDecimal lastPressure = device.currentState("pressure") ? device.currentState("pressure").value.toBigDecimal() : 0
 
@@ -133,10 +140,10 @@ void processMap(Map map) {
 		// } else if 
 
 		String pressureDirection = pressure > lastPressure ? "rising" : "falling"
+		BigDecimal roundedPressure = pressure.setScale((pressureDecimals != null ? pressureDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 
-		logging("${device} : pressure : ${pressure} from hex value ${pressureFlippedHex} flipped from ${map.value}", "trace")
-		logging("${device} : Pressure : ${pressure} kPa", "info")
-		sendEvent(name: "pressure", value: pressure, unit: "kPa")
+		logging("${device} : Pressure : ${roundedPressure} kPa", "info")
+		sendEvent(name: "pressure", value: roundedPressure, unit: "kPa")
 		sendEvent(name: "pressureDirection", value: "${pressureDirection}")
 
 	} else if (map.cluster == "0405") { 
@@ -145,8 +152,7 @@ void processMap(Map map) {
 
 		String[] humidityHex = receivedValue[2..3] + receivedValue[0..1]
 		String humidityFlippedHex = humidityHex.join()
-		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex)
-		humidity = humidity.setScale(2, BigDecimal.ROUND_HALF_UP) / 100
+		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex) / 100
 
 		logging("${device} : humidity : ${humidity} from hex value ${humidityFlippedHex} flipped from ${map.value}", "trace")
 
@@ -170,9 +176,10 @@ void processMap(Map map) {
 
 		} else {
 
-			logging("${device} : Humidity (Relative) : ${humidity} %", "info")
+			BigDecimal roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			logging("${device} : Humidity (Relative) : ${roundedHumidity} %", "info")
 			logging("${device} : Humidity (Absolute) : ${absoluteHumidity} g/m${cubedChar}", "info")
-			sendEvent(name: "humidity", value: humidity, unit: "%")
+			sendEvent(name: "humidity", value: roundedHumidity, unit: "%")
 			sendEvent(name: "absoluteHumidity", value: absoluteHumidity, unit: "g/m${cubedChar}")
 
 		}

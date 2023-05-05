@@ -114,18 +114,19 @@ void processMap(Map map) {
 
 		} else {
 
-			roundedTemperature = temperature.setScale((temperatureDecimals != null ? temperatureDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			BigDecimal roundedTemperature = temperature.setScale((temperatureDecimals != null ? temperatureDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 			logging("${device} : Temperature : ${roundedTemperature} °${temperatureScale}", "info")
 			sendEvent(name: "temperature", value: roundedTemperature, unit: "${temperatureScale}")
 
 		}
+
 	} else if (map.cluster == "0405") { 
 
 		// Received humidity data.
 
 		String[] humidityHex = receivedValue[2..3] + receivedValue[0..1]
 		String humidityFlippedHex = humidityHex.join()
-		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex) /100
+		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex) / 100
 
 		logging("${device} : humidity : ${humidity} from hex value ${humidityFlippedHex} flipped from ${map.value}", "trace")
 
@@ -149,7 +150,7 @@ void processMap(Map map) {
 
 		} else {
 
-			roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			BigDecimal roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 			logging("${device} : Humidity (Relative) : ${roundedHumidity} %", "info")
 			logging("${device} : Humidity (Absolute) : ${absoluteHumidity} g/m${cubedChar}", "info")
 			sendEvent(name: "humidity", value: roundedHumidity, unit: "%")
