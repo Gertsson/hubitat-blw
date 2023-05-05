@@ -100,7 +100,6 @@ void processMap(Map map) {
 		String[] temperatureHex = receivedValue[2..3] + receivedValue[0..1]
 		String temperatureFlippedHex = temperatureHex.join()
 		BigDecimal temperature = hexStrToSignedInt(temperatureFlippedHex) / 100
-		temperature = temperature.setScale((tempDecimals != null ? tempDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 
 		logging("${device} : temperature : ${temperature} from hex value ${temperatureFlippedHex} flipped from ${map.value}", "trace")
 
@@ -115,8 +114,9 @@ void processMap(Map map) {
 
 		} else {
 
-			logging("${device} : Temperature : ${temperature} °${temperatureScale}", "info")
-			sendEvent(name: "temperature", value: temperature, unit: "${temperatureScale}")
+			roundedTemperature = temperature.setScale((tempDecimals != null ? tempDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			logging("${device} : Temperature : ${roundedTemperature} °${temperatureScale}", "info")
+			sendEvent(name: "temperature", value: roundedTemperature, unit: "${temperatureScale}")
 
 		}
 	} else if (map.cluster == "0405") { 
@@ -126,7 +126,6 @@ void processMap(Map map) {
 		String[] humidityHex = receivedValue[2..3] + receivedValue[0..1]
 		String humidityFlippedHex = humidityHex.join()
 		BigDecimal humidity = hexStrToSignedInt(humidityFlippedHex) /100
-		roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
 
 		logging("${device} : humidity : ${humidity} from hex value ${humidityFlippedHex} flipped from ${map.value}", "trace")
 
@@ -150,7 +149,8 @@ void processMap(Map map) {
 
 		} else {
 
-			logging("${device} : Humidity (Relative) : ${humidity} %", "info")
+			roundedHumidity = humidity.setScale((humidityDecimals != null ? humidityDecimals : 2).toInteger(), BigDecimal.ROUND_HALF_UP)
+			logging("${device} : Humidity (Relative) : ${roundedHumidity} %", "info")
 			logging("${device} : Humidity (Absolute) : ${absoluteHumidity} g/m${cubedChar}", "info")
 			sendEvent(name: "humidity", value: roundedHumidity, unit: "%")
 			sendEvent(name: "absoluteHumidity", value: absoluteHumidity, unit: "g/m${cubedChar}")
