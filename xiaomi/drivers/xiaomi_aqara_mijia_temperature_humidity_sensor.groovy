@@ -22,7 +22,7 @@ import groovy.transform.Field
 
 metadata {
 
-	definition (name: "Xiaomi Aqara Temperature and Humidity Sensor", namespace: "Gertsson", author: "Jonas Gertsson", importUrl: "https://raw.githubusercontent.com/Gertsson/hubitat-blw/master/xiaomi/drivers/xiaomi_aqara_mijia_temperature_humidity_sensor.groovy") {
+	definition (name: "Xiaomi Aqara Mijia Temperature and Humidity Sensor", namespace: "Gertsson", author: "Jonas Gertsson", importUrl: "https://raw.githubusercontent.com/Gertsson/hubitat-blw/master/xiaomi/drivers/xiaomi_aqara_mijia_temperature_humidity_sensor.groovy") {
 
 		capability "Battery"
 		capability "Configuration"
