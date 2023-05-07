@@ -1,6 +1,7 @@
 /*
  * 
- *  Xiaomi Aqara Temperature and Humidity Sensor Driver
+ *  Xiaomi Aqara Mijia Temperature and Humidity Sensor Driver 
+ *  Supported models: WSDCGQ11LM and WSDCGQ01LM
  *  Forked from BirdsLikeWires driver for the Xiaomi Aqara Temperature and Humidity Sensor Driver for WSDCGQ11LM
  *  All credit to Andrew Davison for creating the original driver https://github.com/birdslikewires/hubitat
  *	
@@ -21,7 +22,7 @@ import groovy.transform.Field
 
 metadata {
 
-	definition (name: "Xiaomi Aqara Temperature and Humidity Sensor", namespace: "Gertsson", author: "Jonas Gertsson", importUrl: "https://raw.githubusercontent.com/Gertsson/hubitat-blw/master/xiaomi/drivers/xiaomi_aqara_temperature_humidity_sensor.groovy") {
+	definition (name: "Xiaomi Aqara Temperature and Humidity Sensor", namespace: "Gertsson", author: "Jonas Gertsson", importUrl: "https://raw.githubusercontent.com/Gertsson/hubitat-blw/master/xiaomi/drivers/xiaomi_aqara_mijia_temperature_humidity_sensor.groovy") {
 
 		capability "Battery"
 		capability "Configuration"
