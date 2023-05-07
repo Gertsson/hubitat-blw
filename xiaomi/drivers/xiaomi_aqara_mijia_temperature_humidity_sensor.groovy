@@ -57,8 +57,7 @@ preferences {
 	input name: "traceLogging", type: "bool", title: "Enable trace logging", defaultValue: false
 	input name: "temperatureDecimals", type: "enum", title: "Temperature decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
 	input name: "humidityDecimals", type: "enum", title: "Humidity decimals", defaultValue: 2, required: true, options: [[0:"None"],[1:"1"],[2:"2 (Default)"]]
-	input name: "pressureDecimals", type: "enum", title: "Pressure decimals", defaultValue: 1, required: true, options: [[0:"None"],[1:"1 (Default)"]]
-
+	if(model == "lumi.weather") { input name: "pressureDecimals", type: "enum", title: "Pressure decimals", defaultValue: 1, required: true, options: [[0:"None"],[1:"1 (Default)"]] }
 }
 
 
