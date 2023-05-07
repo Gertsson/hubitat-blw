@@ -41,8 +41,8 @@ metadata {
 			command "testCommand"
 		}
 
-		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sens", deviceJoinName: "WSDCGQ01LM", endpointId: "02"
-		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sensor_ht", deviceJoinName: "WSDCGQ01LM", endpointId: "02"
+		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sens", deviceJoinName: "Xiaomi Mijia Temperature and Humidity Sensor WSDCGQ01LM", endpointId: "02"
+		fingerprint profileId: "0104", inClusters: "0000,0003,0019,FFFF,0012", outClusters: "0000,0004,0003,0005,0019,FFFF,0012", manufacturer: "LUMI", model: "lumi.sensor_ht", deviceJoinName: "Xiaomi Mijia Temperature and Humidity Sensor WSDCGQ01LM", endpointId: "02"
 
 	}
 
@@ -71,7 +71,7 @@ void configureSpecifics() {
 	// Called by main configure() method in BirdsLikeWires.xiaomi
 
 	updateDataValue("encoding", "Xiaomi")
-	device.name = "Xiaomi Aqara Temperature and Humidity Sensor WSDCGQ01LM"
+	device.name = "Xiaomi Mijia Temperature and Humidity Sensor WSDCGQ01LM"
 	sendEvent(name: "numberOfButtons", value: 1, isStateChange: false)
 	if (temperatureDecimals == null) device.updateSetting("temperatureDecimals", [value: "2", type: "enum"])
 	if (humidityDecimals == null) device.updateSetting("humidityDecimals", [value: "2", type: "enum"])
